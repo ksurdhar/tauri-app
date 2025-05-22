@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { getSupabase } from '../../lib/supabase';
-import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'wouter';
 
 export function AuthCallback() {
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
+  const [, setLocation] = useLocation();
   const supabase = getSupabase();
 
   useEffect(() => {
@@ -21,7 +21,7 @@ export function AuthCallback() {
         } else if (data.session) {
           console.log('Successfully authenticated');
           // Redirect back to the main app
-          navigate('/');
+          setLocation('/');
         } else {
           setError('No session established after authentication');
         }
@@ -32,14 +32,14 @@ export function AuthCallback() {
     };
     
     handleCallback();
-  }, [navigate, supabase]);
+  }, [setLocation, supabase]);
 
   if (error) {
     return (
       <div className="auth-callback-error">
         <h2>Authentication Error</h2>
         <p>{error}</p>
-        <button onClick={() => navigate('/')}>Go back to login</button>
+        <button onClick={() => setLocation('/')}>Go back to login</button>
       </div>
     );
   }
